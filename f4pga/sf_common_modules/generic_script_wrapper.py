@@ -64,8 +64,8 @@ import os
 import shutil
 import re
 
-from sf_common import *
-from sf_module import *
+from f4pga.sf_common import *
+from f4pga.sf_module import *
 
 # ----------------------------------------------------------------------------- #
 

@@ -205,7 +205,7 @@ def fatal(code, message):
     with a given return code.
     """
 
-    print(f'[FATAL ERROR]: {message}')
+    raise(Exception(f'[FATAL ERROR]: {message}'))
     exit(code)
 
 class ResolutionEnv:

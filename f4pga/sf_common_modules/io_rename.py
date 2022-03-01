@@ -42,9 +42,9 @@ Accepted module parameters:
 
 # ----------------------------------------------------------------------------- #
 
-from sf_common import *
-from sf_module import *
-from sf_module_runner import get_module
+from f4pga.sf_common import *
+from f4pga.sf_module import *
+from f4pga.sf_module_runner import get_module
 
 # ----------------------------------------------------------------------------- #
 
