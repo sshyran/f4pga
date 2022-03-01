@@ -23,6 +23,7 @@ Dynamically import and run sfbuild modules.
 
 from contextlib import contextmanager
 import importlib
+import importlib.util
 import os
 from sf_module import Module, ModuleContext, get_mod_metadata
 from sf_common import ResolutionEnv, deep, sfprint
