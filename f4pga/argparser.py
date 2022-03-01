@@ -72,7 +72,7 @@ def setup_argparser():
 
     parser.add_argument('-v', '--verbose', action='count', default=0)
     parser.add_argument('-s', '--silent', action='store_true')
-    
+
     subparsers = parser.add_subparsers(dest='command')
     build = subparsers.add_parser('build')
     _setup_build_parser(build)
@@ -93,13 +93,13 @@ def _parse_depval(depvalstr: str):
     d = { 'name': None, 'stage': None, 'value': None }
 
     splitted = list(_unescaped_separated('=', depvalstr))
-    
+
     if len(splitted) != 2:
         raise Exception('Too many components')
-    
+
     pathstr = splitted[0]
     valstr = splitted[1]
-    
+
     path_components = pathstr.split('.')
     if len(path_components) < 1:
         raise Exception('Missing value')
@@ -108,9 +108,9 @@ def _parse_depval(depvalstr: str):
         d['stage'] = path_components.pop(0)
     if len(path_components) > 0:
         raise Exception('Too many path components')
-    
+
     d['value'] = _parse_cli_value(valstr)
-    
+
     return d
 
 def _unescaped_matches(regexp: str, s: str, escape_chr='\\'):
@@ -118,7 +118,7 @@ def _unescaped_matches(regexp: str, s: str, escape_chr='\\'):
     Find all occurences of a pattern in a string that contains escape sequences.
     Yields pairs of starting and ending indices of the pattern.
     """
-    
+
     noescapes = ''
 
     # We remove all escape sequnces from a string, so it will match only with
@@ -136,7 +136,7 @@ def _unescaped_matches(regexp: str, s: str, escape_chr='\\'):
             offsets.append(offset)
         offset += 2
         noescapes += noescape
-    
+
     iter =  re.finditer(regexp, noescapes)
 
     for m in iter:
@@ -183,7 +183,7 @@ def _parse_cli_value(s: str):
 
     if len(s) == 0:
         return ''
-    
+
     # List
     if s[0] == '[':
         if len(s) < 2 or s[len(s)-1] != ']':
@@ -210,15 +210,15 @@ def _parse_cli_value(s: str):
             key = k_v[0]
             value =  _parse_cli_value(k_v[1])
             d[key] = value
-        
+
         return d
-    
+
     # Bool hack
     if s == '\\True':
         return True
     if s == '\\False':
         return False
-    
+
     # Number hack
     if len(s) >= 3 and s[0:1] == '\\N':
         return int(s[2:])
@@ -232,9 +232,9 @@ def get_cli_flow_config(args: Namespace, platform: str):
             'dependencies': {},
             'values': {},
         }
-    
+
     platform_flow_config = create_defdict()
-    
+
     def add_entries(arglist: 'list[str]', dict_name: str):
         for value_def in (_parse_depval(cliv) for cliv in arglist):
             stage = value_def['stage']
@@ -246,7 +246,7 @@ def get_cli_flow_config(args: Namespace, platform: str):
                     platform_flow_config[stage] = create_defdict()
                 platform_flow_config[stage][dict_name][value_def['name']] = \
                     value_def['value']
-    
+
     add_entries(args.dep, 'dependencies')
     add_entries(args.val, 'values')
 
