@@ -40,6 +40,7 @@ such as list of source code files.
 
 from argparse import Namespace
 import os
+from os import environ
 import json
 from typing import Iterable
 from colorama import Fore, Style
@@ -62,7 +63,7 @@ mypath = os.path.realpath(os.sys.argv[0])
 mypath = os.path.dirname(mypath)
 binpath = os.path.realpath(os.path.join(mypath, '..'))
 
-share_dir_path = os.path.realpath(os.path.join(mypath, '../../share/symbiflow'))
+share_dir_path = os.path.realpath(f"{environ.get('INSTALL_DIR', '/usr/local')}/xc7/install/share/symbiflow")
 
 class DependencyNotProducedException(Exception):
     dep_name: str
