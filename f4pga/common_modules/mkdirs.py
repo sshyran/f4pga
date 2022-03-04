@@ -17,22 +17,17 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-# Symbiflow Stage Module
+"""
+This module is used as a helper in a abuild chain to automate creating build directiores.
+It's currenty the only parametric module, meaning it can take user-provided input at an early stage in order to
+determine its take/produces I/O.
+This allows other repesenting configurable directories, such as a build directory as dependencies and by doing so, allow
+the dependency algorithm to lazily create the directories if they become necessary.
+"""
 
-""" This module is used as a helper in a abuild chain to automate creating build
-directiores. It' currenty the only parametric module, meaning it can take
-user-provided input at an early stage in order todetermine its take/produces
-I/O. This allows other repesenting configurable directories, such as a build
-directory as dependencies and by doing so, allow the dependency algorithm to
-lazily create the directories if they become necessary. """
+from pathlib import Path
+from f4pga.module import Module, ModuleContext
 
-# ----------------------------------------------------------------------------- #
-
-import os
-from f4pga.common import *
-from f4pga.module import *
-
-# ----------------------------------------------------------------------------- #
 
 class MkDirsModule(Module):
     deps_to_produce: 'dict[str, str]'
@@ -44,7 +39,7 @@ class MkDirsModule(Module):
         outputs = vars(ctx.outputs)
         for _, path in outputs.items():
             yield f'Creating directory {path}...'
-            os.makedirs(path, exist_ok=True)
+            Path(path).mkdir(parents=True, exist_ok=True)
 
     def __init__(self, params):
         self.name = 'mkdirs'

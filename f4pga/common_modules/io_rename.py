@@ -40,13 +40,10 @@ Accepted module parameters:
 
 """
 
-# ----------------------------------------------------------------------------- #
-
 from f4pga.common import *
-from f4pga.module import *
+from f4pga.module import Module, ModuleContext
 from f4pga.module_runner import get_module
 
-# ----------------------------------------------------------------------------- #
 
 def _switch_keys(d: 'dict[str, ]', renames: 'dict[str, str]') -> 'dict[str, ]':
     newd = {}
@@ -57,6 +54,7 @@ def _switch_keys(d: 'dict[str, ]', renames: 'dict[str, str]') -> 'dict[str, ]':
         else:
             newd[k] = v
     return newd
+
 
 def _switchback_attrs(d: Namespace, renames: 'dict[str, str]') -> SimpleNamespace:
     newn = SimpleNamespace()
@@ -69,6 +67,7 @@ def _switchback_attrs(d: Namespace, renames: 'dict[str, str]') -> SimpleNamespac
             setattr(newn, k, v)
     return newn
 
+
 def _switch_entries(l: 'list[str]', renames: 'dict[str, str]') -> 'list[str]':
     newl = []
     for e in l:
@@ -80,11 +79,10 @@ def _switch_entries(l: 'list[str]', renames: 'dict[str, str]') -> 'list[str]':
             newl.append(r if r is not None else e)
     return newl
 
-def _generate_stage_name(name: str):
-    return f'{name}-io_renamed'
 
 def _or_empty_dict(d: 'dict | None'):
     return d if d is not None else {}
+
 
 class IORenameModule(Module):
     module: Module
@@ -117,7 +115,7 @@ class IORenameModule(Module):
         self.rename_values = _or_empty_dict(params.get("rename_values"))
 
         self.module = module
-        self.name = _generate_stage_name(module.name)
+        self.name = f'{module.name}-io_renamed'
         self.no_of_phases = module.no_of_phases
         self.takes = _switch_entries(module.takes, self.rename_takes)
         self.produces = _switch_entries(module.produces, self.rename_produces)
