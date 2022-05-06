@@ -121,7 +121,7 @@ def _setup_build_parser(parser: ArgumentParser):
         metavar='<name=path, ...>',
         type=str,
         help='Specify stage inputs explicitely. This might be required if some files got renamed or deleted and '
-             'symbiflow is unable to deduce the flow that lead to dependencies required by the requested stage'
+             'f4pga is unable to deduce the flow that lead to dependencies required by the requested stage'
     )
 
 
@@ -149,7 +149,7 @@ def setup_argparser():
     """
     Set up argument parser for the program.
     """
-    parser = ArgumentParser(description='SymbiFlow Build System')
+    parser = ArgumentParser(description='F4PGA Build System')
 
     parser.add_argument(
         '-v',
