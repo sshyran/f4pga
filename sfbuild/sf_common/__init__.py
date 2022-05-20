@@ -1,3 +1,22 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+# Copyright (C) 2022 F4PGA Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from argparse import Namespace
 import subprocess
 import os
@@ -27,7 +46,7 @@ def with_qualifier(name: str, q: str) -> str:
 _sfbuild_module_collection_name_to_path = {}
 def scan_modules(mypath: str):
     global _sfbuild_module_collection_name_to_path
-    
+
     sfbuild_home = mypath
     sfbuild_home_dirs = os.listdir(sfbuild_home)
     sfbuild_module_dirs = \
@@ -66,7 +85,7 @@ def deep(fun):
             return [d(p) for p in paths];
         elif type(paths) is dict:
             return dict([(k, d(p)) for k, p in paths.items()])
-    
+
     return d
 
 def file_noext(path: str):
@@ -99,7 +118,7 @@ class VprArgs:
         self.device_name = values.vpr_grid_layout_name
         self.eblif = os.path.realpath(eblif)
         if values.vpr_options is not None:
-            self.optional = options_dict_to_list(values.vpr_options) 
+            self.optional = options_dict_to_list(values.vpr_options)
         else:
             self.optional = []
         if vpr_extra_opts is not None:
@@ -159,7 +178,7 @@ def options_dict_to_list(opt_dict: dict):
     Converts a dictionary of named options for CLI program to a list.
     Example: { "option_name": "value" } -> [ "--option_name", "value" ]
     """
-    
+
     opts = []
     for key, val in opt_dict.items():
         opts.append('--' + key)
@@ -202,7 +221,7 @@ class ResolutionEnv:
 
     def __init__(self, values={}):
         self.values = values
-    
+
     def __copy__(self):
         return ResolutionEnv(self.values.copy())
 
@@ -251,7 +270,7 @@ verbosity_level = 0
 
 def sfprint(verbosity: int, *args):
     """ Print with regards to currently set verbosity level """
-    
+
     global verbosity_level
     if verbosity <= verbosity_level:
         print(*args)

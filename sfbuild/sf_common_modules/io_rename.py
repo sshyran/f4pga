@@ -1,6 +1,21 @@
-#!/usr/bin/python3
-
-# Symbiflow Stage Module
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+# Copyright (C) 2022 F4PGA Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# SPDX-License-Identifier: Apache-2.0
 
 """
 Rename (ie. change) dependencies and values of a module. This module wraps another,
@@ -64,7 +79,7 @@ def _switch_entries(l: 'list[str]', renames: 'dict[str, str]') -> 'list[str]':
         else:
             newl.append(r if r is not None else e)
     return newl
-    
+
 def _generate_stage_name(name: str):
     return f'{name}-io_renamed'
 
@@ -83,7 +98,7 @@ class IORenameModule(Module):
         newctx.values = _switchback_attrs(ctx.values, self.rename_values)
         r = self.module.map_io(newctx)
         return _switch_keys(r, self.rename_produces)
-    
+
     def execute(self, ctx: ModuleContext):
         newctx = ctx.shallow_copy()
         newctx.takes = _switchback_attrs(ctx.takes, self.rename_takes)
@@ -91,7 +106,7 @@ class IORenameModule(Module):
         newctx.outputs = _switchback_attrs(ctx.produces, self.rename_produces)
         print(newctx.takes)
         return self.module.execute(newctx)
-    
+
     def __init__(self, params):
         mod_path = resolve_modstr(params["module"])
         module_class = get_module(mod_path)

@@ -1,4 +1,25 @@
-# Here are the things necessary to write a symbiflow Module
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+# Copyright (C) 2022 F4PGA Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# SPDX-License-Identifier: Apache-2.0
+
+"""
+Here are the things necessary to write an F4PGA Module.
+"""
 
 import abc
 from types import SimpleNamespace
@@ -13,7 +34,7 @@ class Module:
     They also have to specify what dependencies they produce and create the files
     for these dependencies.
     """
-    
+
     no_of_phases: int
     name: str
     takes: 'list[str]'
@@ -37,7 +58,7 @@ class Module:
         `ctx` is `ModuleContext`.
         """
         pass
-    
+
     def __init__(self, params: 'dict[str, ]'):
         self.no_of_phases = 0
         self.current_phase = 0
@@ -49,7 +70,7 @@ class ModuleContext:
     A class for object holding mappings for dependencies and values as well as
     other information needed during modules execution.
     """
-    
+
     share: str                 #   Absolute path to Symbiflow's share directory
     bin: str                   #   Absolute path to Symbiflow's bin directory
     takes: SimpleNamespace     #   Maps symbolic dependency names to relative
@@ -59,11 +80,11 @@ class ModuleContext:
                                # on-demand optional outputs (such as logs)
                                # with `is_output_explicit` method.
     outputs: SimpleNamespace   #   Contains mappings for all available outputs.
-    values: SimpleNamespace    #   Contains all available requested values. 
+    values: SimpleNamespace    #   Contains all available requested values.
     r_env: ResolutionEnv       # `ResolutionEnvironmet` object holding mappings
                                # for current scope.
     module_name: str           # Name of the module.
-    
+
     def is_output_explicit(self, name: str):
         """ True if user has explicitely specified output's path. """
         o = getattr(self.produces, name)
@@ -74,7 +95,7 @@ class ModuleContext:
         Add attribute for a dependency or panic if a required dependency has not
         been given to the module on its input.
         """
-        
+
         for name in deps:
             name, spec = decompose_depname(name)
             value = deps_cfg.get(name)
@@ -120,7 +141,7 @@ class ModuleContext:
         mycopy.share = self.share
         mycopy.bin = self.bin
 
-        return mycopy 
+        return mycopy
 
 class ModuleRuntimeException(Exception):
     info: str
@@ -133,7 +154,7 @@ class ModuleRuntimeException(Exception):
 
 def get_mod_metadata(module: Module):
     """ Get descriptions for produced dependencies. """
-    
+
     meta = {}
     has_meta = hasattr(module, 'prod_meta')
     for prod in module.produces:

@@ -1,8 +1,21 @@
-#!/usr/bin/python3
-
-# Symbiflow Stage Module
-
-# ----------------------------------------------------------------------------- #
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+# Copyright (C) 2022 F4PGA Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# SPDX-License-Identifier: Apache-2.0
 
 import os
 from sf_common import *
@@ -39,7 +52,7 @@ def yosys_synth(tcl, tcl_env, verilog_files=[], read_verilog_args=None, log=None
         for verilog in verilog_files:
             tcl = f'read_verilog {args_str} {verilog}; {tcl}'
         verilog_files = []
-    
+
     # Execute YOSYS command
     return sub(*(['yosys', '-p', tcl] + optional + verilog_files),
                env=env)
@@ -63,7 +76,7 @@ class SynthModule(Module):
 
         top = ctx.values.top
         if ctx.takes.build_dir:
-            top = os.path.join(ctx.takes.build_dir, top)       
+            top = os.path.join(ctx.takes.build_dir, top)
         mapping['eblif'] = top + '.eblif'
         mapping['fasm_extra'] = top + '_fasm_extra.fasm'
         mapping['json'] = top + '.json'
@@ -84,7 +97,7 @@ class SynthModule(Module):
                                  ctx.values.device + '_' + name + '.' + name)
 
         return mapping
-    
+
     def execute(self, ctx: ModuleContext):
         split_inouts = os.path.join(ctx.share, 'scripts/split_inouts.py')
         synth_tcl = os.path.join(ctx.values.tcl_scripts, 'synth.tcl')
@@ -92,26 +105,26 @@ class SynthModule(Module):
 
         tcl_env = yosys_setup_tcl_env(ctx.values.yosys_tcl_env) \
             if ctx.values.yosys_tcl_env else {}
-        
+
         if get_verbosity_level() >= 2:
             yield f'Synthesizing sources: {ctx.takes.sources}...'
         else:
             yield f'Synthesizing sources...'
-        
+
         yosys_synth(synth_tcl, tcl_env, ctx.takes.sources,
                     ctx.values.read_verilog_args, ctx.outputs.synth_log)
 
         yield f'Splitting in/outs...'
         sub('python3', split_inouts, '-i', ctx.outputs.json, '-o',
             ctx.outputs.synth_json)
-        
+
         if not os.path.isfile(ctx.produces.fasm_extra):
             with open(ctx.produces.fasm_extra, 'w') as f:
                 f.write('')
 
         yield f'Converting...'
         yosys_conv(conv_tcl, tcl_env, ctx.outputs.synth_json)
-    
+
     def __init__(self, params):
         self.name = 'synthesize'
         self.no_of_phases = 3
@@ -123,7 +136,7 @@ class SynthModule(Module):
         extra_takes = params.get('takes')
         if extra_takes:
             self.takes += extra_takes
-        
+
         self.produces = [
             'eblif',
             'fasm_extra',
@@ -138,7 +151,7 @@ class SynthModule(Module):
             self.extra_products = extra_products
         else:
             self.extra_products = []
-        
+
         self.values = [
             'top',
             'device',

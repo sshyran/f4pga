@@ -1,3 +1,22 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+# Copyright (C) 2022 F4PGA Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 import os
 import zlib
 import json
@@ -27,7 +46,7 @@ class SymbiCache:
         self.status = {}
         self.cachefile_path = cachefile_path
         self.load()
-    
+
     def _try_pop_consumer(self, path: str, consumer: str):
         if self.status.get(path) and self.status[path].get(consumer):
             self.status[path].pop(consumer)
@@ -37,7 +56,7 @@ class SymbiCache:
             self.hashes[path].pop(consumer)
             if len(self.hashes[path]) == 0:
                 self.hashes.pop(path)
-    
+
     def _try_push_consumer_hash(self, path: str, consumer: str, hash):
         if not self.hashes.get(path):
             self.hashes[path] = {}
@@ -46,7 +65,7 @@ class SymbiCache:
         if not self.status.get(path):
             self.status[path] = {}
         self.status[path][consumer] = status
-    
+
     def _get_last_hash(self, path: str, consumer: str):
         last_hashes = self.hashes.get(path)
         if last_hashes is None:
@@ -77,7 +96,7 @@ class SymbiCache:
         else:
             self._try_push_consumer_status(path, consumer, 'same')
             return False
-    
+
     def get_status(self, path: str, consumer: str):
         """ Get status for a file with a given path.
         returns 'untracked' if the file is not tracked or hasn't been
@@ -90,7 +109,7 @@ class SymbiCache:
         if not status:
             return 'untracked'
         return status
-    
+
     def load(self):
         """Loads cache's state from the persistent storage"""
 
