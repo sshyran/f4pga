@@ -26,7 +26,8 @@ from abc import abstractmethod
 
 from f4pga.common import (
     decompose_depname,
-    ResolutionEnv
+    ResolutionEnv,
+    fatal
 )
 
 
